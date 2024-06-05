@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import "./CarForm.css";
 
 const CarForm = ({ addCar, editCar, carToEdit }) => {
   const [car, setCar] = useState({ model: "", year: "", price: "" });
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     if (carToEdit) {
@@ -21,7 +25,7 @@ const CarForm = ({ addCar, editCar, carToEdit }) => {
     } else {
       addCar(car);
     }
-    setCar({ model: "", year: "", price: "" });
+    navigate("/");
   };
 
   return (
