@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import CarForm from "./components/CarForm";
 import CarList from "./components/CarList";
+import SellCarPage from "./components/SellCarPage"; // Importujemy nowy komponent
 import axios from "axios";
 import "./App.css";
 
@@ -19,8 +20,25 @@ const App = () => {
   };
 
   const addCar = async (car) => {
-    const response = await axios.post("http://localhost:5000/cars", car);
-    setCars([...cars, response.data]);
+    const existingCar = cars.find(
+      (c) =>
+        c.model === car.model &&
+        c.year === car.year &&
+        c.color === car.color &&
+        c.engine === car.engine
+    );
+
+    if (existingCar) {
+      const updatedCar = { ...existingCar, quantity: existingCar.quantity + 1 };
+      const response = await axios.put(
+        `http://localhost:5000/cars/${existingCar.id}`,
+        updatedCar
+      );
+      setCars(cars.map((c) => (c.id === existingCar.id ? response.data : c)));
+    } else {
+      const response = await axios.post("http://localhost:5000/cars", car);
+      setCars([...cars, response.data]);
+    }
   };
 
   const editCar = async (updatedCar) => {
@@ -55,10 +73,15 @@ const App = () => {
             <li>
               <Link to="/add-car">Add Car</Link>
             </li>
+            <li>
+              <Link to="/sell-car">Sell Car</Link> {/* Dodajemy link */}
+            </li>
           </ul>
         </nav>
         <div className="container">
           <Routes>
+            {" "}
+            {/* Wrapujemy wszystkie trasy w Routes */}
             <Route
               path="/"
               element={
@@ -77,7 +100,12 @@ const App = () => {
               path="/edit-car/:id"
               element={<CarForm editCar={editCar} carToEdit={carToEdit} />}
             />
-          </Routes>
+            <Route
+              path="/sell-car" // Nowa ścieżka dla SellCarPage
+              element={<SellCarPage cars={cars} />} // Przekazujemy cars jako props
+            />
+          </Routes>{" "}
+          {/* Zamknięcie Routes */}
         </div>
       </div>
     </Router>

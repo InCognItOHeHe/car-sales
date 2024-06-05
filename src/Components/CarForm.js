@@ -3,7 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./CarForm.css";
 
 const CarForm = ({ addCar, editCar, carToEdit }) => {
-  const [car, setCar] = useState({ model: "", year: "", price: "" });
+  const [car, setCar] = useState({
+    model: "",
+    year: "",
+    price: "",
+    quantity: "",
+    color: "",
+    engine: "",
+  });
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -51,6 +58,30 @@ const CarForm = ({ addCar, editCar, carToEdit }) => {
         name="price"
         placeholder="Price"
         value={car.price}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="number"
+        name="quantity"
+        placeholder="Quantity"
+        value={car.quantity}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="text"
+        name="color"
+        placeholder="Color"
+        value={car.color}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="text"
+        name="engine"
+        placeholder="Engine"
+        value={car.engine}
         onChange={handleChange}
         required
       />
